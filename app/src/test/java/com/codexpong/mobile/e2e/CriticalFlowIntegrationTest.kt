@@ -26,7 +26,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import okhttp3.OkHttpClient
 import okhttp3.WebSocketListener
@@ -81,7 +81,7 @@ class CriticalFlowIntegrationTest {
     }
 
     @Test
-    fun `핵심 흐름이 끝까지 성공적으로 이어진다`() = runTest {
+    fun `핵심 흐름이 끝까지 성공적으로 이어진다`() = runBlocking {
         val authRepository = AuthRepository(baseUrlRepository, retrofitProvider, tokenRepository)
         val replayRepository = ReplayRepository(baseUrlRepository, retrofitProvider)
         val jobRepository = JobRepository(baseUrlRepository, retrofitProvider)
