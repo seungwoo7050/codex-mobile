@@ -15,4 +15,10 @@ sealed class NavRoutes(val route: String) {
 
         fun buildRoute(replayId: Long): String = "replays/$replayId"
     }
+    data object Jobs : NavRoutes("jobs")
+    data object JobDetail : NavRoutes("jobs/{jobId}") {
+        const val ARG_JOB_ID = "jobId"
+
+        fun buildRoute(jobId: Long): String = "jobs/$jobId"
+    }
 }

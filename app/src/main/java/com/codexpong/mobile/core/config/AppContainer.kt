@@ -10,6 +10,7 @@ import com.codexpong.mobile.core.network.BaseUrlRepository
 import com.codexpong.mobile.core.network.RetrofitProvider
 import com.codexpong.mobile.data.auth.AuthRepository
 import com.codexpong.mobile.data.health.HealthRepository
+import com.codexpong.mobile.data.job.JobRepository
 import com.codexpong.mobile.data.replay.ReplayRepository
 import com.codexpong.mobile.data.user.UserRepository
 import com.squareup.moshi.Moshi
@@ -65,6 +66,11 @@ class AppContainer(context: Context) {
     )
 
     val replayRepository: ReplayRepository = ReplayRepository(
+        baseUrlRepository = baseUrlRepository,
+        retrofitProvider = retrofitProvider
+    )
+
+    val jobRepository: JobRepository = JobRepository(
         baseUrlRepository = baseUrlRepository,
         retrofitProvider = retrofitProvider
     )

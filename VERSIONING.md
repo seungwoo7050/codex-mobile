@@ -77,6 +77,8 @@ Completion criteria:
 
 ## 6. v0.4.0 – Export requests + jobs list/detail (REST)
 
+Status: ✅ 내보내기 요청 및 잡 목록/상세 REST UI와 테스트 완료
+
 Scope:
 - POST /api/replays/{replayId}/exports/mp4
 - POST /api/replays/{replayId}/exports/thumbnail

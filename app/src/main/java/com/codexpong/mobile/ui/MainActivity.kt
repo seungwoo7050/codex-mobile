@@ -35,6 +35,10 @@ import com.codexpong.mobile.ui.auth.RegisterViewModel
 import com.codexpong.mobile.ui.auth.SessionViewModel
 import com.codexpong.mobile.ui.health.HealthScreen
 import com.codexpong.mobile.ui.health.HealthViewModel
+import com.codexpong.mobile.ui.job.JobDetailScreen
+import com.codexpong.mobile.ui.job.JobDetailViewModel
+import com.codexpong.mobile.ui.job.JobListScreen
+import com.codexpong.mobile.ui.job.JobListViewModel
 import com.codexpong.mobile.ui.navigation.NavRoutes
 import com.codexpong.mobile.ui.profile.ProfileScreen
 import com.codexpong.mobile.ui.profile.ProfileViewModel
@@ -128,6 +132,7 @@ fun CodexApp() {
                     viewModel = vm,
                     onOpenHealth = { navController.navigate(NavRoutes.Health.route) },
                     onOpenReplays = { navController.navigate(NavRoutes.Replays.route) },
+                    onOpenJobs = { navController.navigate(NavRoutes.Jobs.route) },
                     onOpenSettings = { navController.navigate(NavRoutes.Settings.route) }
                 )
             }
@@ -177,6 +182,36 @@ fun CodexApp() {
                 val replayId = backStackEntry.arguments?.getLong(NavRoutes.ReplayDetail.ARG_REPLAY_ID) ?: -1L
                 ReplayDetailScreen(
                     replayId = replayId,
+                    viewModel = vm,
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateJobDetail = { jobId -> navController.navigate(NavRoutes.JobDetail.buildRoute(jobId)) }
+                )
+            }
+            composable(NavRoutes.Jobs.route) {
+                val vm: JobListViewModel = viewModel(
+                    factory = JobListViewModel.provideFactory(LocalAppContainer.current)
+                )
+                JobListScreen(
+                    viewModel = vm,
+                    onNavigateDetail = { jobId -> navController.navigate(NavRoutes.JobDetail.buildRoute(jobId)) },
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(
+                route = NavRoutes.JobDetail.route,
+                arguments = listOf(
+                    navArgument(NavRoutes.JobDetail.ARG_JOB_ID) {
+                        type = NavType.LongType
+                        defaultValue = -1L
+                    }
+                )
+            ) { backStackEntry ->
+                val vm: JobDetailViewModel = viewModel(
+                    factory = JobDetailViewModel.provideFactory(LocalAppContainer.current)
+                )
+                val jobId = backStackEntry.arguments?.getLong(NavRoutes.JobDetail.ARG_JOB_ID) ?: -1L
+                JobDetailScreen(
+                    jobId = jobId,
                     viewModel = vm,
                     onNavigateBack = { navController.popBackStack() }
                 )
