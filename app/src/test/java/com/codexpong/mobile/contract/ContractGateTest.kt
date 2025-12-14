@@ -45,4 +45,15 @@ class ContractGateTest {
         assertNotNull("/api/auth/logout 경로가 정의되어야 한다", paths?.optJSONObject("/api/auth/logout"))
         assertNotNull("/api/users/me 경로가 정의되어야 한다", paths?.optJSONObject("/api/users/me"))
     }
+
+    @Test
+    fun `openapi에 리플레이 목록 및 상세 경로가 존재해야 한다`() {
+        val openapi = File("../contracts/openapi.json")
+        assertTrue("openapi.json 파일이 존재해야 한다", openapi.exists())
+        val json = JSONObject(openapi.readText())
+        val paths = json.optJSONObject("paths")
+
+        assertNotNull("/api/replays 경로가 정의되어야 한다", paths?.optJSONObject("/api/replays"))
+        assertNotNull("/api/replays/{replayId} 경로가 정의되어야 한다", paths?.optJSONObject("/api/replays/{replayId}"))
+    }
 }

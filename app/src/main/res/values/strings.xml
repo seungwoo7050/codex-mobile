@@ -14,6 +14,9 @@
     <string name="action_reload_profile">프로필 새로고침</string>
     <string name="action_logout">로그아웃</string>
     <string name="action_back_to_profile">프로필로 돌아가기</string>
+    <string name="action_back_to_replays">리플레이 목록으로 돌아가기</string>
+    <string name="action_next_page">다음 페이지</string>
+    <string name="action_previous_page">이전 페이지</string>
     <string name="label_base_url">기본 주소</string>
     <string name="hint_base_url">예: http://10.0.2.2:8080</string>
     <string name="action_save">저장</string>
@@ -25,4 +28,17 @@
     <string name="label_nickname">닉네임</string>
     <string name="label_avatar_url">아바타 URL</string>
     <string name="label_rating">레이팅</string>
+    <string name="title_replays">리플레이 목록</string>
+    <string name="title_replay_detail">리플레이 #%1$d</string>
+    <string name="label_empty_replays">조회할 리플레이가 없습니다.</string>
+    <string name="label_match_type">경기 유형: %1$s</string>
+    <string name="label_score_you">내 점수: %1$d</string>
+    <string name="label_score_opponent">상대 점수: %1$d</string>
+    <string name="label_score_summary">점수: %1$d - %2$d</string>
+    <string name="label_opponent">상대: %1$s</string>
+    <string name="label_created_at">생성 시각: %1$s</string>
+    <string name="label_event_format">이벤트 포맷: %1$s</string>
+    <string name="label_replay_checksum">체크섬: %1$s</string>
+    <string name="label_replay_download_path">다운로드 경로: %1$s</string>
+    <string name="action_open_replays">리플레이 목록 보기</string>
 </resources>
