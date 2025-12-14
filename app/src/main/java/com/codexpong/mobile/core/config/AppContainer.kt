@@ -4,8 +4,15 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.codexpong.mobile.core.auth.AuthTokenRepository
+import com.codexpong.mobile.core.network.AuthorizationInterceptor
 import com.codexpong.mobile.core.network.BaseUrlRepository
+import com.codexpong.mobile.core.network.RetrofitProvider
+import com.codexpong.mobile.data.auth.AuthRepository
 import com.codexpong.mobile.data.health.HealthRepository
+import com.codexpong.mobile.data.user.UserRepository
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -20,6 +27,13 @@ class AppContainer(context: Context) {
         produceFile = { context.preferencesDataStoreFile("codex_mobile_settings") }
     )
 
+    val authTokenRepository = AuthTokenRepository(dataStore)
+
+    val baseUrlRepository: BaseUrlRepository = BaseUrlRepository(
+        dataStore = dataStore,
+        defaultBaseUrl = DEFAULT_BASE_URL
+    )
+
     private val loggingInterceptor: HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
         // 기본 로거는 디버그용으로 최소한의 요청/응답을 남긴다.
         level = HttpLoggingInterceptor.Level.BASIC
@@ -29,16 +43,29 @@ class AppContainer(context: Context) {
         .connectTimeout(20, TimeUnit.SECONDS)
         .readTimeout(20, TimeUnit.SECONDS)
         .writeTimeout(20, TimeUnit.SECONDS)
+        .addInterceptor(AuthorizationInterceptor(authTokenRepository))
         .addInterceptor(loggingInterceptor)
         .build()
 
-    val baseUrlRepository: BaseUrlRepository = BaseUrlRepository(
-        dataStore = dataStore,
-        defaultBaseUrl = DEFAULT_BASE_URL
+    private val moshi: Moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .build()
+    private val retrofitProvider: RetrofitProvider = RetrofitProvider(okHttpClient, moshi)
+
+    val authRepository: AuthRepository = AuthRepository(
+        baseUrlRepository = baseUrlRepository,
+        retrofitProvider = retrofitProvider,
+        tokenRepository = authTokenRepository
+    )
+
+    val userRepository: UserRepository = UserRepository(
+        baseUrlRepository = baseUrlRepository,
+        retrofitProvider = retrofitProvider
     )
 
     val healthRepository: HealthRepository = HealthRepository(
-        okHttpClient = okHttpClient
+        okHttpClient = okHttpClient,
+        moshi = moshi
     )
 
     /**

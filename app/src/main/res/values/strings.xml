@@ -2,11 +2,27 @@
     <string name="app_name">Codex Pong 클라이언트</string>
     <string name="title_health">상태 확인</string>
     <string name="title_settings">환경 설정</string>
+    <string name="title_login">로그인</string>
+    <string name="title_register">회원가입</string>
+    <string name="title_profile">내 프로필</string>
     <string name="action_refresh">다시 불러오기</string>
+    <string name="action_login">로그인</string>
+    <string name="action_go_register">회원가입으로 이동</string>
+    <string name="action_register">회원가입 요청</string>
+    <string name="action_back_to_login">로그인으로 돌아가기</string>
+    <string name="action_save_profile">프로필 저장</string>
+    <string name="action_reload_profile">프로필 새로고침</string>
+    <string name="action_logout">로그아웃</string>
+    <string name="action_back_to_profile">프로필로 돌아가기</string>
     <string name="label_base_url">기본 주소</string>
     <string name="hint_base_url">예: http://10.0.2.2:8080</string>
     <string name="action_save">저장</string>
     <string name="label_health_status">서버 상태</string>
     <string name="label_loading">불러오는 중…</string>
     <string name="label_error">오류</string>
+    <string name="label_username">아이디</string>
+    <string name="label_password">비밀번호</string>
+    <string name="label_nickname">닉네임</string>
+    <string name="label_avatar_url">아바타 URL</string>
+    <string name="label_rating">레이팅</string>
 </resources>

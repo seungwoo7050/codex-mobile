@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /**
@@ -19,6 +20,11 @@ open class BaseUrlRepository(
     open val baseUrl: Flow<String> = dataStore.data.map { preferences ->
         preferences[keyBaseUrl] ?: defaultBaseUrl
     }
+
+    /**
+     * 최신 기본 URL을 즉시 반환한다.
+     */
+    open suspend fun currentBaseUrl(): String = baseUrl.first()
 
     /**
      * 사용자가 입력한 기본 URL을 저장한다.
