@@ -83,6 +83,22 @@ class JobRepositoryTest {
     }
 
     @Test
+    fun `썸네일 내보내기 요청 시 jobId를 반환한다`() = runTest {
+        server.enqueue(
+            MockResponse().setResponseCode(200).setBody("""{"jobId":202}""")
+        )
+        val repository = JobRepository(baseUrlRepository, retrofitProvider)
+
+        val result = repository.requestThumbnailExport(replayId = 8)
+
+        assertTrue(result.isSuccess)
+        val response = result.getOrThrow()
+        assertEquals(202L, response.jobId)
+        val request = server.takeRequest()
+        assertEquals("/api/replays/8/exports/thumbnail", request.path)
+    }
+
+    @Test
     fun `잡 목록을 페이징으로 불러온다`() = runTest {
         server.enqueue(
             MockResponse().setResponseCode(200).setBody(
@@ -131,5 +147,20 @@ class JobRepositoryTest {
         server.enqueue(MockResponse().setResponseCode(500).setBody("{}"))
         val serverError = repository.requestThumbnailExport(replayId = 9)
         assertTrue(serverError.isFailure)
+    }
+
+    @Test
+    fun `완료된 잡 결과를 스트리밍으로 저장한다`() = runTest {
+        val binaryBody = "result-bytes"
+        server.enqueue(MockResponse().setResponseCode(200).setBody(binaryBody))
+        val repository = JobRepository(baseUrlRepository, retrofitProvider)
+        val destination = Files.createTempFile("job-result", ".bin").toFile()
+
+        val result = repository.downloadResult(jobId = 7, destination = destination)
+
+        assertTrue(result.isSuccess)
+        assertEquals(binaryBody, destination.readText())
+        val request = server.takeRequest()
+        assertEquals("/api/jobs/7/result", request.path)
     }
 }

@@ -11,6 +11,8 @@ import com.codexpong.mobile.core.network.RetrofitProvider
 import com.codexpong.mobile.data.auth.AuthRepository
 import com.codexpong.mobile.data.health.HealthRepository
 import com.codexpong.mobile.data.job.JobRepository
+import com.codexpong.mobile.data.job.ws.JobWebSocketClient
+import com.codexpong.mobile.data.job.ws.JobWebSocketSource
 import com.codexpong.mobile.data.replay.ReplayRepository
 import com.codexpong.mobile.data.user.UserRepository
 import com.squareup.moshi.Moshi
@@ -73,6 +75,16 @@ class AppContainer(context: Context) {
     val jobRepository: JobRepository = JobRepository(
         baseUrlRepository = baseUrlRepository,
         retrofitProvider = retrofitProvider
+    )
+
+    /**
+     * 잡 진행률 WebSocket 클라이언트를 생성한다.
+     */
+    fun createJobWebSocketClient(): JobWebSocketSource = JobWebSocketClient(
+        okHttpClient = okHttpClient,
+        baseUrlRepository = baseUrlRepository,
+        authTokenRepository = authTokenRepository,
+        moshi = moshi
     )
 
     val healthRepository: HealthRepository = HealthRepository(

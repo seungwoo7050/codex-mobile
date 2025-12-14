@@ -98,6 +98,8 @@ Completion criteria:
 
 ## 7. v0.5.0 – Job progress via WebSocket + download
 
+Status: ✅ WebSocket 진행률/재연결/다운로드 구현 및 테스트 완료
+
 Scope:
 - WebSocket connect:
   - ws://<host>:8080/ws/jobs?token=<JWT>

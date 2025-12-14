@@ -68,5 +68,6 @@ class ContractGateTest {
         assertNotNull("/api/replays/{replayId}/exports/thumbnail 경로가 정의되어야 한다", paths?.optJSONObject("/api/replays/{replayId}/exports/thumbnail"))
         assertNotNull("/api/jobs 경로가 정의되어야 한다", paths?.optJSONObject("/api/jobs"))
         assertNotNull("/api/jobs/{jobId} 경로가 정의되어야 한다", paths?.optJSONObject("/api/jobs/{jobId}"))
+        assertNotNull("/api/jobs/{jobId}/result 경로가 정의되어야 한다", paths?.optJSONObject("/api/jobs/{jobId}/result"))
     }
 }

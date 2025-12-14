@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,11 +31,10 @@ fun JobDetailScreen(
     onNavigateBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(jobId) {
-        if (uiState.job == null || uiState.jobId != jobId) {
-            viewModel.load(jobId)
-        }
+        viewModel.start(jobId)
     }
 
     Column(
@@ -48,6 +48,17 @@ fun JobDetailScreen(
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
+        Text(
+            text = if (uiState.isConnected) {
+                stringResource(id = R.string.label_ws_connected)
+            } else {
+                stringResource(id = R.string.label_ws_disconnected)
+            },
+            color = if (uiState.isConnected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        uiState.connectionError?.let { error ->
+            Text(text = stringResource(id = R.string.label_ws_error, error), color = MaterialTheme.colorScheme.error)
+        }
         if (uiState.isLoading) {
             Text(text = stringResource(id = R.string.label_loading))
         }
@@ -93,7 +104,25 @@ fun JobDetailScreen(
                     job.downloadUrl?.let { url ->
                         Text(text = stringResource(id = R.string.label_job_download_url, url))
                     }
+                    job.checksum?.let { checksum ->
+                        Text(text = stringResource(id = R.string.label_job_checksum, checksum))
+                    }
                 }
+            }
+        }
+        uiState.progressMessage?.let { message ->
+            Text(text = stringResource(id = R.string.label_job_progress_message, message))
+        }
+        val canDownload = (uiState.job?.status == "COMPLETED") || !uiState.job?.downloadUrl.isNullOrBlank()
+        if (canDownload) {
+            Button(onClick = { viewModel.downloadResult(context) }, enabled = !uiState.isDownloading, modifier = Modifier.fillMaxWidth()) {
+                Text(text = stringResource(id = R.string.action_download_result))
+            }
+            if (uiState.isDownloading) {
+                Text(text = stringResource(id = R.string.label_downloading))
+            }
+            uiState.downloadedFilePath?.let { path ->
+                Text(text = stringResource(id = R.string.label_download_path, path))
             }
         }
         Button(onClick = onNavigateBack, modifier = Modifier.fillMaxWidth()) {
