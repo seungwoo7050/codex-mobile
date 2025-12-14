@@ -111,8 +111,9 @@ class CriticalFlowIntegrationTest {
         server.enqueue(MockResponse().setResponseCode(200).setBody("""{"jobId":77}"""))
 
         val jobResponse = jobRepository.requestMp4Export(replayId = 5).getOrThrow()
+        val jobId = requireNotNull(jobResponse.jobId) { "jobId should be returned for download" }
 
-        assertEquals(77L, jobResponse.jobId)
+        assertEquals(77L, jobId)
 
         val wsScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         val wsClient = JobWebSocketClient(
@@ -158,7 +159,7 @@ class CriticalFlowIntegrationTest {
         server.enqueue(MockResponse().setResponseCode(200).setBody("export-binary"))
         val destination = Files.createTempFile("job-download", ".bin").toFile()
 
-        val downloadResult = jobRepository.downloadResult(jobId = jobResponse.jobId, destination = destination)
+        val downloadResult = jobRepository.downloadResult(jobId = jobId, destination = destination)
 
         assertTrue(downloadResult.isSuccess)
         assertEquals("export-binary", destination.readText())
