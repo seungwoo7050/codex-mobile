@@ -131,6 +131,8 @@ Completion criteria:
 
 ## 9. v1.0.0 – Portfolio-ready hardening
 
+Status: ✅ 최소 보장 시나리오 테스트 및 재현 가능한 문서 정비 완료
+
 Scope:
 - Improve resilience:
   - retry/backoff tuning

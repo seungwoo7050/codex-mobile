@@ -1,70 +1,57 @@
-# CLONE_GUIDE (v0.5.0)
+# CLONE_GUIDE (v1.0.0)
 
-이 문서는 레포를 복제한 뒤 빠르게 실행/테스트하기 위한 안내서다.
+리뷰어가 그대로 따라 해도 동일한 실행·테스트 결과를 얻도록 모든 단계를 적었다.
 
-## 1. 필수 도구
+## 1. 필수 도구 확인
 - JDK 21
-- Android SDK (platforms;android-35, build-tools;35.0.0, platform-tools)
-- Gradle 8.14.3 이상 (레포에 wrapper가 없으므로 로컬에 설치된 gradle 명령을 사용한다)
+- Android SDK: `platforms;android-35`, `build-tools;35.0.0`, `platform-tools`
+- Gradle 8.14.3 이상 (레포에 wrapper가 없으므로 로컬 `gradle` 명령을 사용)
 
-### 1.1 Android SDK 설치 예시 (리눅스)
+```bash
+java -version
+gradle -v
+```
+위 두 명령이 정상 출력되면 준비 완료다.
+
+## 2. Android SDK 설치 예시 (리눅스)
 ```bash
 SDK_ROOT="$HOME/android-sdk"
 mkdir -p "$SDK_ROOT"
-# commandline-tools 설치 후 sdkmanager 사용
+# commandline-tools 설치 후 sdkmanager 사용 (이미 설치돼 있으면 생략)
 # sdkmanager가 PATH에 없다면 "$SDK_ROOT/cmdline-tools/latest/bin"을 PATH에 추가
 yes | sdkmanager --sdk_root="$SDK_ROOT" "platform-tools" "build-tools;35.0.0" "platforms;android-35"
+export ANDROID_SDK_ROOT="$SDK_ROOT"
+export ANDROID_HOME="$SDK_ROOT"
 ```
-- 환경 변수 설정: `export ANDROID_SDK_ROOT=$SDK_ROOT` `export ANDROID_HOME=$SDK_ROOT`
 
-## 2. 프로젝트 구조 및 주요 기능
-- Compose + Navigation 기반의 단일 앱 모듈(`app`)
-- v0.5.0 기능:
-  - 로그인/회원가입/로그아웃, 프로필 조회/수정 유지
-  - 리플레이 목록(페이징) 및 상세 조회(`/api/replays`, `/api/replays/{replayId}`)
-  - 내보내기 요청 후 잡 목록/상세 REST 조회(`/api/jobs`, `/api/jobs/{jobId}`)
-  - 잡 상세 화면에서 WebSocket을 통해 실시간 진행률(`job.connected`, `job.progress`, `job.completed`, `job.failed`) 반영
-  - 완료된 잡의 결과를 `/api/jobs/{jobId}/result`로 스트리밍 다운로드하여 앱 캐시에 저장
-  - WebSocket 연결 끊김 시 지수 백오프로 재연결하고, 연결 재개 시 REST로 상태를 보강
+## 3. 저장소 클론 후 체크리스트
+1) 레포 클론: `git clone <repo-url> && cd codex-mobile`
+2) 계약 스냅샷 존재 확인: `ls contracts/SERVER_VERSION.txt contracts/openapi.json contracts/ws-contract.md`
+3) 바이너리 생성물 제거 정책 유지: PNG/JAR/APK/zip 등은 절대 커밋하지 않는다.
 
-## 3. 실행 방법
-1) Android Studio에서 열거나, CLI로 빌드:
+## 4. 테스트 실행(재현 필수)
+아래 순서로 전체 단위 테스트를 실행하면 v1.0.0 최소 보장 시나리오까지 검증된다.
 ```bash
-export ANDROID_SDK_ROOT=$SDK_ROOT
-export ANDROID_HOME=$SDK_ROOT
-gradle assembleDebug
-```
-2) 앱 실행 후 `환경 설정`에서 기본 URL을 서버 주소로 맞춘다.
-3) 로그인/회원가입 후 프로필 화면에서 내 정보 확인 및 수정이 가능하다.
-4) 리플레이 상세에서 내보내기 요청을 누르면 잡 상세 화면으로 이동하여 실시간 진행률을 확인할 수 있다.
-
-## 4. 테스트 방법
-- 단위 테스트 전체 실행:
-```bash
-export ANDROID_SDK_ROOT=$SDK_ROOT
-export ANDROID_HOME=$SDK_ROOT
+export ANDROID_SDK_ROOT="$SDK_ROOT"  # 2단계에서 설정한 경로
+export ANDROID_HOME="$SDK_ROOT"
 gradle test --console=plain --no-daemon --no-parallel
 ```
-- 주요 테스트 커버리지:
-  - 계약 게이트(`/api/health`, 인증/프로필, 리플레이 목록/상세 경로 확인)
-  - 로그인 성공/401 실패
-  - Authorization 헤더 인터셉터 및 401 시 토큰 정리
-  - 프로필 GET/PUT 파싱
-  - 리플레이 목록/상세 파싱(MockWebServer)
-  - 리플레이 목록 ViewModel의 페이징/빈/에러 상태
-  - 잡 WebSocket 연결/재연결, 진행률/완료/실패 이벤트 파싱(MockWebServer 업그레이드)
-  - 잡 상세 ViewModel의 진행률/실패 멱등 처리
-  - 잡 결과 스트리밍 다운로드 요청 경로 검증
+주요 포함 항목:
+- 계약 게이트 검사(필수 contract 파일 확인)
+- 인증/프로필/리플레이/잡 REST 파싱
+- WebSocket 진행률/재연결 파싱
+- **login → replay list → export → ws progress → download** 통합 흐름 고정 테스트
 
-## 5. 기타 주의사항
-- PNG/JAR/APK 등의 바이너리 파일을 커밋하지 않는다.
-- `gradle-wrapper.jar`를 레포에 추가하지 않는다.
-- 모든 한국어 UI/주석 정책을 유지한다.
+## 5. 앱 실행 및 핵심 시나리오 수동 검증
+1) Android Studio로 열거나 CLI 빌드: `gradle assembleDebug`
+2) 앱 실행 후 `환경 설정` 화면에서 서버 기본 URL을 실제 서버 주소로 입력(예: `http://10.0.2.2:8080`).
+3) 로그인/회원가입 → 토큰이 저장됐는지 확인(로그인 화면으로 되돌아가지 않음).
+4) 리플레이 목록에서 항목을 열고 `MP4 내보내기`를 요청하면 잡 상세 화면으로 이동한다.
+5) 잡 상세 화면에서 실시간 진행률(WebSocket)과 완료 후 `다운로드` 버튼 활성화를 확인한다.
+6) 다운로드가 끝나면 결과 파일이 앱 캐시에 저장되고, 실패 시 한국어 오류 메시지가 노출되어야 한다.
 
-## 6. WebSocket/다운로드/재연결 정책
-- WebSocket 주소: `ws://<호스트>:8080/ws/jobs?token=<JWT>` (기본 URL의 http/https를 ws/wss로 변환하여 사용)
-- 이벤트 타입: `job.connected`, `job.progress`, `job.completed`, `job.failed`만 처리하며, 동일 이벤트가 중복 수신되어도 멱등하게 반영한다.
-- 연결이 끊기면 지수 백오프(1s→2s→4s→8s 캡)로 재연결한다.
-- 재연결 후에는 `GET /api/jobs/{jobId}`로 한 번 더 상태를 조회하여 누락된 진행률을 보강한다.
-- `job.completed`/`job.failed` 이후 뒤늦게 들어오는 `job.progress`는 무시해 최종 상태를 덮어쓰지 않는다.
-- 다운로드는 `GET /api/jobs/{jobId}/result`를 스트리밍으로 받아 앱 캐시(`cacheDir`)에 저장하며, 저장된 바이너리 파일은 레포에 커밋하지 않는다.
+## 6. 자주 발생하는 문제 해결 팁
+- `No connected devices`: 에뮬레이터/디바이스 연결 후 다시 `assembleDebug` 또는 Android Studio 실행.
+- `ANDROID_SDK_ROOT not set`: 2단계 환경 변수 export 여부 확인.
+- 포트 접근 불가: 서버가 로컬이면 에뮬레이터에서는 `10.0.2.2` 주소를 사용한다.
+- 캐시/빌드 잔여물: `git clean -xfd`로 정리하되 중요 파일이 삭제되지 않도록 주의한다.
