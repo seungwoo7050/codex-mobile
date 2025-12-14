@@ -60,6 +60,8 @@ Completion criteria:
 
 ## 5. v0.3.0 – Replays list + detail
 
+Status: ✅ 리플레이 목록/상세 UI, 파싱, 페이징/빈/에러 상태 테스트 완료
+
 Scope:
 - GET /api/replays (paging)
 - GET /api/replays/{replayId}

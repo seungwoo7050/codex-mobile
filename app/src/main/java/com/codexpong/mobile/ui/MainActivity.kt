@@ -22,6 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.codexpong.mobile.CodexApplication
 import com.codexpong.mobile.R
@@ -36,6 +38,10 @@ import com.codexpong.mobile.ui.health.HealthViewModel
 import com.codexpong.mobile.ui.navigation.NavRoutes
 import com.codexpong.mobile.ui.profile.ProfileScreen
 import com.codexpong.mobile.ui.profile.ProfileViewModel
+import com.codexpong.mobile.ui.replay.ReplayDetailScreen
+import com.codexpong.mobile.ui.replay.ReplayDetailViewModel
+import com.codexpong.mobile.ui.replay.ReplayListScreen
+import com.codexpong.mobile.ui.replay.ReplayListViewModel
 import com.codexpong.mobile.ui.settings.SettingsScreen
 import com.codexpong.mobile.ui.settings.SettingsViewModel
 
@@ -121,6 +127,7 @@ fun CodexApp() {
                 ProfileScreen(
                     viewModel = vm,
                     onOpenHealth = { navController.navigate(NavRoutes.Health.route) },
+                    onOpenReplays = { navController.navigate(NavRoutes.Replays.route) },
                     onOpenSettings = { navController.navigate(NavRoutes.Settings.route) }
                 )
             }
@@ -139,6 +146,37 @@ fun CodexApp() {
                     factory = SettingsViewModel.provideFactory(LocalAppContainer.current)
                 )
                 SettingsScreen(
+                    viewModel = vm,
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(NavRoutes.Replays.route) {
+                val vm: ReplayListViewModel = viewModel(
+                    factory = ReplayListViewModel.provideFactory(LocalAppContainer.current)
+                )
+                ReplayListScreen(
+                    viewModel = vm,
+                    onNavigateDetail = { replayId ->
+                        navController.navigate(NavRoutes.ReplayDetail.buildRoute(replayId))
+                    },
+                    onNavigateBack = { navController.popBackStack() }
+                )
+            }
+            composable(
+                route = NavRoutes.ReplayDetail.route,
+                arguments = listOf(
+                    navArgument(NavRoutes.ReplayDetail.ARG_REPLAY_ID) {
+                        type = NavType.LongType
+                        defaultValue = -1L
+                    }
+                )
+            ) { backStackEntry ->
+                val vm: ReplayDetailViewModel = viewModel(
+                    factory = ReplayDetailViewModel.provideFactory(LocalAppContainer.current)
+                )
+                val replayId = backStackEntry.arguments?.getLong(NavRoutes.ReplayDetail.ARG_REPLAY_ID) ?: -1L
+                ReplayDetailScreen(
+                    replayId = replayId,
                     viewModel = vm,
                     onNavigateBack = { navController.popBackStack() }
                 )

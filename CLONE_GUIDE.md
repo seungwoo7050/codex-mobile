@@ -1,4 +1,4 @@
-# CLONE_GUIDE (v0.2.0)
+# CLONE_GUIDE (v0.3.0)
 
 이 문서는 레포를 복제한 뒤 빠르게 실행/테스트하기 위한 안내서다.
 
@@ -19,11 +19,11 @@ yes | sdkmanager --sdk_root="$SDK_ROOT" "platform-tools" "build-tools;35.0.0" "p
 
 ## 2. 프로젝트 구조 및 주요 기능
 - Compose + Navigation 기반의 단일 앱 모듈(`app`)
-- v0.2.0 기능:
-  - 로그인/회원가입/로그아웃 구현 및 DataStore 기반 토큰 보관
-  - OkHttp 인터셉터가 `Authorization: Bearer <token>` 자동 추가 및 401 시 토큰 제거
-  - `/api/users/me` GET/PUT으로 내 프로필 조회/수정
-  - 기존 건강 확인 화면 유지(기본 URL 설정 포함)
+- v0.3.0 기능:
+  - 로그인/회원가입/로그아웃, 프로필 조회/수정 유지
+  - 리플레이 목록(페이징) 및 상세 조회(`/api/replays`, `/api/replays/{replayId}`)
+  - 목록 화면에서 빈 상태/에러 상태/페이징 버튼 제공
+  - 상세 화면에서 체크섬, 다운로드 경로, 요약 정보 표시
 
 ## 3. 실행 방법
 1) Android Studio에서 열거나, CLI로 빌드:
@@ -43,10 +43,12 @@ export ANDROID_HOME=$SDK_ROOT
 gradle test --console=plain --no-daemon --no-parallel
 ```
 - 주요 테스트 커버리지:
-  - 계약 게이트(`/api/health`, 인증/프로필 경로 확인)
+  - 계약 게이트(`/api/health`, 인증/프로필, 리플레이 목록/상세 경로 확인)
   - 로그인 성공/401 실패
   - Authorization 헤더 인터셉터 및 401 시 토큰 정리
   - 프로필 GET/PUT 파싱
+  - 리플레이 목록/상세 파싱(MockWebServer)
+  - 리플레이 목록 ViewModel의 페이징/빈/에러 상태
 
 ## 5. 기타 주의사항
 - PNG/JAR/APK 등의 바이너리 파일을 커밋하지 않는다.

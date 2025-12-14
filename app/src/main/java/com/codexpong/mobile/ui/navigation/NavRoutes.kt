@@ -9,4 +9,10 @@ sealed class NavRoutes(val route: String) {
     data object Profile : NavRoutes("profile")
     data object Health : NavRoutes("health")
     data object Settings : NavRoutes("settings")
+    data object Replays : NavRoutes("replays")
+    data object ReplayDetail : NavRoutes("replays/{replayId}") {
+        const val ARG_REPLAY_ID = "replayId"
+
+        fun buildRoute(replayId: Long): String = "replays/$replayId"
+    }
 }
