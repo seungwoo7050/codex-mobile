@@ -60,8 +60,16 @@
     <string name="label_job_error_message">에러 메시지: %1$s</string>
     <string name="label_job_result_uri">결과 URI: %1$s</string>
     <string name="label_job_download_url">다운로드 URL: %1$s</string>
+    <string name="label_job_checksum">체크섬: %1$s</string>
     <string name="label_export_actions">내보내기 요청</string>
     <string name="action_export_mp4">MP4 내보내기</string>
     <string name="action_export_thumbnail">썸네일 내보내기</string>
     <string name="action_open_job_detail">작업 #%1$d 상세 보기</string>
+    <string name="label_ws_connected">실시간 연결됨</string>
+    <string name="label_ws_disconnected">연결 대기 중</string>
+    <string name="label_ws_error">실시간 연결 오류: %1$s</string>
+    <string name="label_job_progress_message">단계 메시지: %1$s</string>
+    <string name="action_download_result">결과 다운로드</string>
+    <string name="label_downloading">다운로드 중…</string>
+    <string name="label_download_path">저장 경로: %1$s</string>
 </resources>

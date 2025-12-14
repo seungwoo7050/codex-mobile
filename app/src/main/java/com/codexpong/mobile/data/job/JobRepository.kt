@@ -5,8 +5,11 @@ import com.codexpong.mobile.core.network.RetrofitProvider
 import com.codexpong.mobile.data.job.model.JobCreateResponse
 import com.codexpong.mobile.data.job.model.JobPageResponse
 import com.codexpong.mobile.data.job.model.JobResponse
+import java.io.File
+import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.Request
 
 /**
  * 잡 생성 및 조회를 담당하는 저장소.
@@ -51,5 +54,31 @@ open class JobRepository(
      */
     open suspend fun fetchJobDetail(jobId: Long): Result<JobResponse> = withContext(Dispatchers.IO) {
         runCatching { service().getJobDetail(jobId) }
+    }
+
+    /**
+     * 완료된 잡 결과를 스트리밍으로 다운로드하여 지정된 파일에 저장한다.
+     */
+    open suspend fun downloadResult(jobId: Long, destination: File): Result<File> = withContext(Dispatchers.IO) {
+        runCatching {
+            val baseUrl = baseUrlRepository.currentBaseUrl().trimEnd('/')
+            val request = Request.Builder()
+                .url("$baseUrl/api/jobs/$jobId/result")
+                .get()
+                .build()
+
+            retrofitProvider.client().newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    throw IOException("다운로드 실패: ${response.code}")
+                }
+                val body = response.body ?: throw IOException("다운로드 응답이 비었습니다")
+                body.byteStream().use { input ->
+                    destination.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+            }
+            destination
+        }
     }
 }
