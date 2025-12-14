@@ -23,6 +23,7 @@ import okio.Path.Companion.toOkioPath
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -92,5 +93,48 @@ class AuthRepositoryTest {
 
         assertTrue(result.isFailure)
         assertEquals(null, tokenRepository.currentToken())
+    }
+
+    @Test
+    fun `회원가입 성공 시 토큰을 저장한다`() = runTest {
+        server.enqueue(
+            MockResponse().setResponseCode(200).setBody(
+                """{"token":"signup-token","expiresAt":"2024-02-01T00:00:00Z","user":{"id":2,"username":"signup","nickname":"회원","avatarUrl":null,"rating":1100,"authProvider":"local","locale":"ko","createdAt":"2024-02-01T00:00:00Z","updatedAt":"2024-02-01T00:00:00Z"}}"""
+            )
+        )
+        val repository = AuthRepository(baseUrlRepository, retrofitProvider, tokenRepository)
+
+        val result = repository.register(username = "signup", password = "pw", nickname = "회원", avatarUrl = null)
+
+        assertTrue(result.isSuccess)
+        assertEquals("signup-token", tokenRepository.currentToken())
+        val request = server.takeRequest()
+        assertEquals("/api/auth/register", request.path)
+    }
+
+    @Test
+    fun `로그아웃 요청 후 토큰을 제거한다`() = runTest {
+        tokenRepository.saveToken("existing-token")
+        server.enqueue(MockResponse().setResponseCode(200).setBody("{}"))
+        val repository = AuthRepository(baseUrlRepository, retrofitProvider, tokenRepository)
+
+        val result = repository.logout()
+
+        assertTrue(result.isSuccess)
+        assertNull(tokenRepository.currentToken())
+        val request = server.takeRequest()
+        assertEquals("/api/auth/logout", request.path)
+    }
+
+    @Test
+    fun `로그아웃 실패여도 토큰을 제거한다`() = runTest {
+        tokenRepository.saveToken("existing-token")
+        server.enqueue(MockResponse().setResponseCode(500).setBody("{}"))
+        val repository = AuthRepository(baseUrlRepository, retrofitProvider, tokenRepository)
+
+        val result = repository.logout()
+
+        assertTrue(result.isFailure)
+        assertNull(tokenRepository.currentToken())
     }
 }
