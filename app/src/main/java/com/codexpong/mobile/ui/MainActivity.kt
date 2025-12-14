@@ -13,6 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,9 +26,16 @@ import androidx.navigation.compose.rememberNavController
 import com.codexpong.mobile.CodexApplication
 import com.codexpong.mobile.R
 import com.codexpong.mobile.core.config.AppContainer
+import com.codexpong.mobile.ui.auth.LoginScreen
+import com.codexpong.mobile.ui.auth.LoginViewModel
+import com.codexpong.mobile.ui.auth.RegisterScreen
+import com.codexpong.mobile.ui.auth.RegisterViewModel
+import com.codexpong.mobile.ui.auth.SessionViewModel
 import com.codexpong.mobile.ui.health.HealthScreen
 import com.codexpong.mobile.ui.health.HealthViewModel
 import com.codexpong.mobile.ui.navigation.NavRoutes
+import com.codexpong.mobile.ui.profile.ProfileScreen
+import com.codexpong.mobile.ui.profile.ProfileViewModel
 import com.codexpong.mobile.ui.settings.SettingsScreen
 import com.codexpong.mobile.ui.settings.SettingsViewModel
 
@@ -50,6 +60,23 @@ val LocalAppContainer = androidx.compose.runtime.staticCompositionLocalOf<AppCon
 @Composable
 fun CodexApp() {
     val navController = rememberNavController()
+    val appContainer = LocalAppContainer.current
+    val sessionViewModel: SessionViewModel = viewModel(
+        factory = SessionViewModel.provideFactory(appContainer)
+    )
+    val sessionState by sessionViewModel.uiState.collectAsState()
+
+    LaunchedEffect(sessionState.isAuthenticated) {
+        if (sessionState.isAuthenticated) {
+            navController.navigate(NavRoutes.Profile.route) {
+                popUpTo(0) { inclusive = true }
+            }
+        } else {
+            navController.navigate(NavRoutes.Login.route) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
 
     Scaffold(topBar = {
         TopAppBar(
@@ -60,18 +87,51 @@ fun CodexApp() {
     }) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = NavRoutes.Health.route,
+            startDestination = NavRoutes.Login.route,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            composable(NavRoutes.Login.route) {
+                val vm: LoginViewModel = viewModel(
+                    factory = LoginViewModel.provideFactory(LocalAppContainer.current)
+                )
+                LoginScreen(
+                    viewModel = vm,
+                    onNavigateRegister = { navController.navigate(NavRoutes.Register.route) }
+                )
+            }
+            composable(NavRoutes.Register.route) {
+                val vm: RegisterViewModel = viewModel(
+                    factory = RegisterViewModel.provideFactory(LocalAppContainer.current)
+                )
+                RegisterScreen(
+                    viewModel = vm,
+                    onNavigateLogin = {
+                        navController.navigate(NavRoutes.Login.route) {
+                            popUpTo(NavRoutes.Login.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            composable(NavRoutes.Profile.route) {
+                val vm: ProfileViewModel = viewModel(
+                    factory = ProfileViewModel.provideFactory(LocalAppContainer.current)
+                )
+                ProfileScreen(
+                    viewModel = vm,
+                    onOpenHealth = { navController.navigate(NavRoutes.Health.route) },
+                    onOpenSettings = { navController.navigate(NavRoutes.Settings.route) }
+                )
+            }
             composable(NavRoutes.Health.route) {
                 val vm: HealthViewModel = viewModel(
                     factory = HealthViewModel.provideFactory(LocalAppContainer.current)
                 )
                 HealthScreen(
                     viewModel = vm,
-                    onOpenSettings = { navController.navigate(NavRoutes.Settings.route) }
+                    onOpenSettings = { navController.navigate(NavRoutes.Settings.route) },
+                    onNavigateProfile = { navController.popBackStack(NavRoutes.Profile.route, inclusive = false) }
                 )
             }
             composable(NavRoutes.Settings.route) {

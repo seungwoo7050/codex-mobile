@@ -41,6 +41,8 @@ Completion criteria:
 
 ## 4. v0.2.0 – Auth + token + profile
 
+Status: ✅ 로그인/회원가입/로그아웃, 토큰 보관/인터셉터, 내 프로필 GET/PUT 구현 및 테스트 완료
+
 Scope:
 - Register/login/logout
 - Token persistence (DataStore)

@@ -1,4 +1,4 @@
-# CLONE_GUIDE (v0.1.0)
+# CLONE_GUIDE (v0.2.0)
 
 이 문서는 레포를 복제한 뒤 빠르게 실행/테스트하기 위한 안내서다.
 
@@ -17,11 +17,13 @@ yes | sdkmanager --sdk_root="$SDK_ROOT" "platform-tools" "build-tools;35.0.0" "p
 ```
 - 환경 변수 설정: `export ANDROID_SDK_ROOT=$SDK_ROOT` `export ANDROID_HOME=$SDK_ROOT`
 
-## 2. 프로젝트 구조 요약
+## 2. 프로젝트 구조 및 주요 기능
 - Compose + Navigation 기반의 단일 앱 모듈(`app`)
-- 설정 화면: REST 기본 URL을 런타임에서 변경 가능
-- 헬스 화면: `/api/health` 응답을 호출하여 UI에 표시
-- 계약 게이트 테스트: `contracts/`의 3개 파일 존재 여부 및 `/api/health` 경로를 확인
+- v0.2.0 기능:
+  - 로그인/회원가입/로그아웃 구현 및 DataStore 기반 토큰 보관
+  - OkHttp 인터셉터가 `Authorization: Bearer <token>` 자동 추가 및 401 시 토큰 제거
+  - `/api/users/me` GET/PUT으로 내 프로필 조회/수정
+  - 기존 건강 확인 화면 유지(기본 URL 설정 포함)
 
 ## 3. 실행 방법
 1) Android Studio에서 열거나, CLI로 빌드:
@@ -30,7 +32,8 @@ export ANDROID_SDK_ROOT=$SDK_ROOT
 export ANDROID_HOME=$SDK_ROOT
 gradle assembleDebug
 ```
-2) 에뮬레이터/실기기에서 실행 후 설정 화면에서 기본 URL을 환경에 맞게 수정한다.
+2) 앱 실행 후 `환경 설정`에서 기본 URL을 서버 주소로 맞춘다.
+3) 로그인/회원가입 후 프로필 화면에서 내 정보 확인 및 수정이 가능하다.
 
 ## 4. 테스트 방법
 - 단위 테스트 전체 실행:
@@ -39,7 +42,11 @@ export ANDROID_SDK_ROOT=$SDK_ROOT
 export ANDROID_HOME=$SDK_ROOT
 gradle test --console=plain --no-daemon --no-parallel
 ```
-- CI에서도 동일 명령을 사용하며, 계약 게이트 테스트와 헬스 관련 스모크 테스트가 포함된다.
+- 주요 테스트 커버리지:
+  - 계약 게이트(`/api/health`, 인증/프로필 경로 확인)
+  - 로그인 성공/401 실패
+  - Authorization 헤더 인터셉터 및 401 시 토큰 정리
+  - 프로필 GET/PUT 파싱
 
 ## 5. 기타 주의사항
 - PNG/JAR/APK 등의 바이너리 파일을 커밋하지 않는다.

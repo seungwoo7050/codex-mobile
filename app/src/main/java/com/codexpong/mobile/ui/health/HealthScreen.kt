@@ -27,7 +27,8 @@ import com.codexpong.mobile.R
 @Composable
 fun HealthScreen(
     viewModel: HealthViewModel,
-    onOpenSettings: () -> Unit
+    onOpenSettings: () -> Unit,
+    onNavigateProfile: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -63,6 +64,9 @@ fun HealthScreen(
         }
         Button(onClick = onOpenSettings, modifier = Modifier.fillMaxWidth(), contentPadding = PaddingValues(12.dp)) {
             Text(text = stringResource(id = R.string.title_settings))
+        }
+        Button(onClick = onNavigateProfile, modifier = Modifier.fillMaxWidth(), contentPadding = PaddingValues(12.dp)) {
+            Text(text = stringResource(id = R.string.action_back_to_profile))
         }
     }
 }
