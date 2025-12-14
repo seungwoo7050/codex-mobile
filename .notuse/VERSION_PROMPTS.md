@@ -42,14 +42,15 @@
 6) v0.1.0 산출물로 CLONE_GUIDE.md(한국어)를 생성해라(실행/테스트 방법 포함).
 7) VERSIONING.md에서 v0.1.0을 완료 처리해라.
 8) .github/workflows/ci.yml에 CI 설정을 추가해라.
-````
+```
 
 ---
 
 ## v0.2.0 – Auth + token + profile
 
 ```text
-1) 위 문서들 다시 읽고 v0.2.0 범위만 작업해라.
+0) AGENTS.md → STACK_DESIGN.md → PRODUCT_SPEC.md → CODING_GUIDE.md → VERSIONING.md → VERSION_PROMPTS.md를 순서대로 읽어라.
+1) v0.2.0 범위만 작업해라.
 2) openapi.json을 기준으로 다음을 구현:
    - 로그인/회원가입/로그아웃
    - 토큰 저장(DataStore)
@@ -70,6 +71,7 @@
 ## v0.3.0 – Replays list + detail
 
 ```text
+0) AGENTS.md → STACK_DESIGN.md → PRODUCT_SPEC.md → CODING_GUIDE.md → VERSIONING.md → VERSION_PROMPTS.md를 순서대로 읽어라.
 1) v0.3.0 범위: 리플레이 목록/상세만.
 2) 구현:
    - GET /api/replays (paging)
@@ -88,6 +90,7 @@
 ## v0.4.0 – Export requests + jobs list/detail (REST)
 
 ```text
+0) AGENTS.md → STACK_DESIGN.md → PRODUCT_SPEC.md → CODING_GUIDE.md → VERSIONING.md → VERSION_PROMPTS.md를 순서대로 읽어라.
 1) v0.4.0 범위: 내보내기 요청 + 잡 REST만.
 2) 구현:
    - POST /api/replays/{replayId}/exports/mp4
@@ -109,6 +112,7 @@
 ## v0.5.0 – Job progress via WebSocket + download
 
 ```text
+0) AGENTS.md → STACK_DESIGN.md → PRODUCT_SPEC.md → CODING_GUIDE.md → VERSIONING.md → VERSION_PROMPTS.md를 순서대로 읽어라.
 1) ws-contract.md를 기준으로 job progress WS를 구현한다.
 2) 구현:
    - ws://<host>:8080/ws/jobs?token=<JWT> 연결
