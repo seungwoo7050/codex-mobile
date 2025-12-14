@@ -7,16 +7,17 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class JobResponse(
-    val jobId: Long?,
-    val jobType: String?,
-    val status: String?,
-    val progress: Int?,
-    val targetReplayId: Long?,
-    val createdAt: String?,
-    val startedAt: String?,
-    val endedAt: String?,
-    val errorCode: String?,
-    val errorMessage: String?,
-    val resultUri: String?,
-    val downloadUrl: String?
+    val jobId: Long? = null,
+    val jobType: String? = null,
+    val status: String? = null,
+    val progress: Int? = null,
+    val targetReplayId: Long? = null,
+    val createdAt: String? = null,
+    val startedAt: String? = null,
+    val endedAt: String? = null,
+    val errorCode: String? = null,
+    val errorMessage: String? = null,
+    val resultUri: String? = null,
+    val downloadUrl: String? = null,
+    val checksum: String? = null
 )

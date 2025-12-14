@@ -132,4 +132,19 @@ class JobRepositoryTest {
         val serverError = repository.requestThumbnailExport(replayId = 9)
         assertTrue(serverError.isFailure)
     }
+
+    @Test
+    fun `완료된 잡 결과를 스트리밍으로 저장한다`() = runTest {
+        val binaryBody = "result-bytes"
+        server.enqueue(MockResponse().setResponseCode(200).setBody(binaryBody))
+        val repository = JobRepository(baseUrlRepository, retrofitProvider)
+        val destination = Files.createTempFile("job-result", ".bin").toFile()
+
+        val result = repository.downloadResult(jobId = 7, destination = destination)
+
+        assertTrue(result.isSuccess)
+        assertEquals(binaryBody, destination.readText())
+        val request = server.takeRequest()
+        assertEquals("/api/jobs/7/result", request.path)
+    }
 }
