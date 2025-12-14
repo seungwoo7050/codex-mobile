@@ -41,6 +41,7 @@
 5) 테스트를 통과시켜라.
 6) v0.1.0 산출물로 CLONE_GUIDE.md(한국어)를 생성해라(실행/테스트 방법 포함).
 7) VERSIONING.md에서 v0.1.0을 완료 처리해라.
+8) .github/workflows/ci.yml에 CI 설정을 추가해라.
 ````
 
 ---
