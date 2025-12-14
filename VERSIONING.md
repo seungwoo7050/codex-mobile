@@ -19,7 +19,9 @@ This document defines the version roadmap for the Android client.
 - v0.5.0 – Job progress via WebSocket + download result
 - v1.0.0 – Portfolio-ready hardening
 
-## 3. v0.1.0 – Skeleton + contract gates + health smoke
+## 3. v0.1.0 – Skeleton + contract gates + health smoke (완료)
+
+Status: ✅ 기본 스켈레톤, 계약 게이트, 헬스 스모크 테스트 구현 및 통과
 
 Scope:
 - Android app skeleton (Compose + navigation)
