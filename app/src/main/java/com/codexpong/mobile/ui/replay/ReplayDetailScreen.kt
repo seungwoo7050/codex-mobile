@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,7 +29,8 @@ import com.codexpong.mobile.R
 fun ReplayDetailScreen(
     replayId: Long,
     viewModel: ReplayDetailViewModel,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateJobDetail: (Long) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -76,6 +79,41 @@ fun ReplayDetailScreen(
                         it.eventFormat?.let { format ->
                             Text(text = stringResource(id = R.string.label_event_format, format))
                         }
+                    }
+                }
+            }
+        }
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .wrapContentHeight(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(text = stringResource(id = R.string.label_export_actions), fontWeight = FontWeight.Bold)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(
+                        onClick = { viewModel.requestMp4Export() },
+                        enabled = !uiState.isExporting
+                    ) {
+                        Text(text = stringResource(id = R.string.action_export_mp4))
+                    }
+                    Button(
+                        onClick = { viewModel.requestThumbnailExport() },
+                        enabled = !uiState.isExporting
+                    ) {
+                        Text(text = stringResource(id = R.string.action_export_thumbnail))
+                    }
+                }
+                uiState.exportMessage?.let { message ->
+                    Text(text = message)
+                }
+                uiState.lastCreatedJobId?.let { jobId ->
+                    Button(onClick = { onNavigateJobDetail(jobId) }) {
+                        Text(text = stringResource(id = R.string.action_open_job_detail, jobId))
                     }
                 }
             }

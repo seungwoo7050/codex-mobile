@@ -17,6 +17,7 @@
     <string name="action_back_to_replays">리플레이 목록으로 돌아가기</string>
     <string name="action_next_page">다음 페이지</string>
     <string name="action_previous_page">이전 페이지</string>
+    <string name="action_back_to_jobs">작업 목록으로 돌아가기</string>
     <string name="label_base_url">기본 주소</string>
     <string name="hint_base_url">예: http://10.0.2.2:8080</string>
     <string name="action_save">저장</string>
@@ -41,4 +42,26 @@
     <string name="label_replay_checksum">체크섬: %1$s</string>
     <string name="label_replay_download_path">다운로드 경로: %1$s</string>
     <string name="action_open_replays">리플레이 목록 보기</string>
+    <string name="action_open_jobs">작업 목록 보기</string>
+    <string name="title_jobs">작업 목록</string>
+    <string name="title_job_detail">작업 #%1$d</string>
+    <string name="label_job_status_filter">상태 필터</string>
+    <string name="label_job_type_filter">타입 필터</string>
+    <string name="action_apply_filters">필터 적용</string>
+    <string name="label_job_id">작업 ID: %1$d</string>
+    <string name="label_job_type">작업 유형: %1$s</string>
+    <string name="label_job_status">작업 상태: %1$s</string>
+    <string name="label_job_progress">진행률: %1$d%%</string>
+    <string name="label_job_target_replay">대상 리플레이: %1$d</string>
+    <string name="label_job_created_at">생성 시각: %1$s</string>
+    <string name="label_job_started_at">시작 시각: %1$s</string>
+    <string name="label_job_ended_at">종료 시각: %1$s</string>
+    <string name="label_job_error_code">에러 코드: %1$s</string>
+    <string name="label_job_error_message">에러 메시지: %1$s</string>
+    <string name="label_job_result_uri">결과 URI: %1$s</string>
+    <string name="label_job_download_url">다운로드 URL: %1$s</string>
+    <string name="label_export_actions">내보내기 요청</string>
+    <string name="action_export_mp4">MP4 내보내기</string>
+    <string name="action_export_thumbnail">썸네일 내보내기</string>
+    <string name="action_open_job_detail">작업 #%1$d 상세 보기</string>
 </resources>

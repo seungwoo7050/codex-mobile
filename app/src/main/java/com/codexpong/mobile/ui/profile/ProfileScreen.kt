@@ -31,6 +31,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel,
     onOpenHealth: () -> Unit,
     onOpenReplays: () -> Unit,
+    onOpenJobs: () -> Unit,
     onOpenSettings: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -93,6 +94,9 @@ fun ProfileScreen(
         }
         Button(onClick = onOpenReplays, modifier = Modifier.fillMaxWidth()) {
             Text(text = stringResource(id = R.string.action_open_replays))
+        }
+        Button(onClick = onOpenJobs, modifier = Modifier.fillMaxWidth()) {
+            Text(text = stringResource(id = R.string.action_open_jobs))
         }
         Button(onClick = onOpenSettings, modifier = Modifier.fillMaxWidth()) {
             Text(text = stringResource(id = R.string.title_settings))
